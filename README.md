@@ -9,8 +9,9 @@
 - Magisk installed
 
 ## Installation Guide
-- Install via Magisk app or Recovery
-- Reboot (reboot twice don't reflash, if you have Magisk sepolicy.rule bug)
+- Install [MIUI Core Magisk Module](https://github.com/reiryuki/MIUI-Core-Magisk-Module) first
+- Install this module via Magisk app or Recovery
+- Reboot (reboot twice don't reflash, if you have Magisk sepolicy.rule bug, or just turn your device to Permissive if it's still failed.)
 
 ## Optional
 
