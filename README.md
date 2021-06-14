@@ -32,4 +32,4 @@
 - https://www.paypal.me/reiryuki
 
 ## Download
-- Tap Releases bellow
+- Tap here > https://www.pling.com/p/1537529/
