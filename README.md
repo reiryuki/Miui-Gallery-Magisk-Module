@@ -3,7 +3,7 @@
 ## Descriptions
 - MIUI Gallery app ported from Xiaomi Mi 9 for any Android 6 until 9 non-MIUI ROM.
 - Changing ro.product.manufacturer to "Xiaomi" for video editor.
-- Changeing ro.product.device to "cepheus" for video editor effects.
+- Changing ro.product.device to "cepheus" for appearing sky filter and video editor effects.
 - Conflicting with modules which also changing ro.product.manufacturer and ro.product.device.
 
 ## Requirements
