@@ -26,7 +26,9 @@
 - If you don't do above, it will be closed immediately
 
 ## Credits and contributors
+- Android Ryuki Mods Discussions Team
 - Android Package Port Factory Team
+- ANXCamera VIP Edition Team
 
 ## Thanks for Donations
 - https://t.me/androidryukimodsdiscussions/2619
