@@ -6,6 +6,9 @@
 - Changing ro.product.device to "cepheus" for appearing sky filter and video editor effects if it's activated.
 - Conflicting with modules which also changing ro.product.manufacturer at service.sh and ro.product.device at system.prop if it's activated.
 
+# Screenshots
+- https://t.me/androidryukimods/96
+
 ## Requirements
 - Not in Miui ROM
 - Android 6 until 12
@@ -15,6 +18,10 @@
 - Install [Miui Core Magisk Module](https://github.com/reiryuki/Miui-Core-Magisk-Module) first. Tap here: https://github.com/reiryuki/Miui-Core-Magisk-Module
 - Install this module via Magisk app or Recovery
 - Reboot (reboot twice don't reflash, if you have Magisk sepolicy.rule bug, or just turn your device to Permissive if it's still failed.)
+
+## Tested on
+- CrDroid ROM Android 10 arm64
+- DotOS ROM Android 11 arm64
 
 ## Optional
 
