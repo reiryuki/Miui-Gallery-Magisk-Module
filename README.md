@@ -6,7 +6,7 @@
 - Changing ro.product.device to "cepheus" for appearing sky filter and video editor effects if it's activated.
 - Conflicting with modules which also changing ro.product.manufacturer at service.sh and ro.product.device at system.prop if it's activated.
 
-# Screenshots
+## Screenshots
 - https://t.me/androidryukimods/96
 
 ## Requirements
