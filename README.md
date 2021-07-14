@@ -1,7 +1,7 @@
 # Miui Gallery Magisk Module
 
 ## Descriptions
-- Miui Gallery app ported from Xiaomi Mi 9 for any Android 6 until 12 non-Miui ROM.
+- Miui Gallery app ported for any Android 6 until 12 non-Miui ROM.
 
 ## Screenshots
 - https://t.me/androidryukimods/180
