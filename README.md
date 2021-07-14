@@ -10,7 +10,7 @@
 ## Requirements
 - Not in Miui ROM
 - Android 6 until 12
-- OpenGLES 2.0
+- OpenGLES 2.0 and up
 - Magisk installed
 
 ## Installation Guide
