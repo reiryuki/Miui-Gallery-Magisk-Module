@@ -15,7 +15,7 @@
 ## Installation Guide
 - Install [Miui Core Magisk Module](https://github.com/reiryuki/Miui-Core-Magisk-Module) first. Tap here: https://github.com/reiryuki/Miui-Core-Magisk-Module
 - Install this module via Magisk app or Recovery
-- Reboot (reboot twice don't reflash, if you have Magisk sepolicy.rule bug, or just turn your device to Permissive if it's still failed.)
+- Reboot
 
 ## Tested on
 - CrDroid ROM Android 10 arm64
