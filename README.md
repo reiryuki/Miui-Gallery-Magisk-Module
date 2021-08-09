@@ -2,7 +2,6 @@
 
 ## Descriptions
 - Miui Gallery app ported for any Android 6 until 12 non-Miui ROM.
-- Changing ro.product.manufacturer to Xiaomi for working video editor.
 
 ## Screenshots
 - https://t.me/androidryukimods/180
