@@ -40,4 +40,5 @@
 - https://www.paypal.me/reiryuki
 
 ## Download
-- Tap here > https://www.pling.com/p/1537529/
+- Global version: https://www.pling.com/p/1537529/
+- China version: https://www.pling.com/p/1572183/
