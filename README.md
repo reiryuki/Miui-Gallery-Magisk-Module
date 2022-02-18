@@ -1,14 +1,14 @@
 # Miui Gallery Magisk Module
 
 ## Descriptions
-- Miui Gallery app ported for any Android 6 until 12 non-Miui ROM.
+- Miui Gallery app by Xiaomi Inc.
 
 ## Screenshots
 - https://t.me/androidryukimods/180
 
 ## Requirements
-- Not in Miui ROM
-- Android 6 until 12
+- NOT in Miui ROM
+- Android 5 and up
 - OpenGLES 2.0 and up
 - Magisk installed
 
@@ -20,10 +20,9 @@
 ## Tested on
 - CrDroid ROM Android 10
 - DotOS ROM Android 11
+- Android 12 Ancient OS ROM
 
-## Optional
-
-## Troubleshootings
+## Troubleshootings & Optionals
 - https://t.me/androidryukimods/114
 
 ## Bug Report
@@ -31,8 +30,8 @@
 - If you don't do above, it will be closed immediately
 
 ## Credits and contributors
-- Android Ryuki Mods Discussions Team
-- https://t.me/androidryukimodsdiscussions/25188
+- https://t.me/androidryukimodsdiscussions
+- https://t.me/androidappsportdevelopment
 - ANXCamera VIP Edition Team
 
 ## Thanks for Donations
