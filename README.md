@@ -20,7 +20,6 @@
 ## Tested on
 - CrDroid ROM Android 10
 - DotOS ROM Android 11
-- Android 12 Ancient OS ROM
 
 ## Troubleshootings & Optionals
 - https://t.me/androidryukimods/114
