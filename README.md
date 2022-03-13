@@ -23,7 +23,7 @@
 - AncientOS ROM Android 12
 
 ## Troubleshootings & Optionals
-- https://t.me/androidryukimods/114
+- https://t.me/androidryukimodsdiscussions/64467
 
 ## Bug Report
 - https://t.me/androidryukimodsdiscussions/2618
