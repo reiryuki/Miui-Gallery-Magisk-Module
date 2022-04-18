@@ -14,7 +14,7 @@
 
 ## Installation Guide
 - Install [Miui Core Magisk Module](https://github.com/reiryuki/Miui-Core-Magisk-Module) first. Tap here: https://github.com/reiryuki/Miui-Core-Magisk-Module
-- Install this module via Magisk app or Recovery
+- Install this Miui Gallery Magisk Module via Magisk app or Recovery (download bellow)
 - Reboot
 
 ## Tested on
