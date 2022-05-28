@@ -1,5 +1,12 @@
 ui_print " "
 
+# magisk
+if [ -d /sbin/.magisk ]; then
+  MAGISKTMP=/sbin/.magisk
+else
+  MAGISKTMP=`find /dev -mindepth 2 -maxdepth 2 -type d -name .magisk`
+fi
+
 # info
 MODVER=`grep_prop version $MODPATH/module.prop`
 MODVERCODE=`grep_prop versionCode $MODPATH/module.prop`
@@ -66,6 +73,23 @@ else
   rm -f /data/adb/modules/MiuiCore/disable
 fi
 
+# global
+FILE=$MODPATH/service.sh
+if getprop | grep -Eq "miui.global\]: \[1"; then
+  ui_print "- Global mode"
+  sed -i 's/#g//g' $FILE
+  ui_print " "
+fi
+
+# code
+FILE=$MODPATH/service.sh
+NAME=ro.miui.ui.version.code
+if getprop | grep -Eq "miui.code\]: \[0"; then
+  ui_print "- Removing $NAME..."
+  sed -i "s/resetprop $NAME/#resetprop $NAME/g" $FILE
+  ui_print " "
+fi
+
 # cleaning
 ui_print "- Cleaning..."
 APP="`ls $MODPATH/system/priv-app` `ls $MODPATH/system/app`"
@@ -78,7 +102,6 @@ fi
 for APPS in $APP; do
   rm -f `find /data/dalvik-cache /data/resource-cache -type f -name *$APPS*.apk`
 done
-rm -f $MODPATH/LICENSE
 rm -rf /metadata/magisk/$MODID
 rm -rf /mnt/vendor/persist/magisk/$MODID
 rm -rf /persist/magisk/$MODID
@@ -97,13 +120,6 @@ if [ "$PROP" == 1 ]; then
     sed -i "s/<allow-in-power-save package=\"$PKGS\" \/>//g" $FILE
   done
   ui_print " "
-fi
-
-# magisk
-if [ -d /sbin/.magisk ]; then
-  MAGISKTMP=/sbin/.magisk
-else
-  MAGISKTMP=`find /dev -mindepth 2 -maxdepth 2 -type d -name .magisk`
 fi
 
 # function
@@ -152,11 +168,11 @@ if getprop | grep -Eq "miui.cleanup\]: \[1"; then
   ui_print "- Cleaning-up $MODID data..."
   cleanup
   ui_print " "
-elif [ -d $DIR ] && ! grep -Eq "$MODNAME" $FILE; then
-  ui_print "- Different version detected"
-  ui_print "  Cleaning-up $MODID data..."
-  cleanup
-  ui_print " "
+#elif [ -d $DIR ] && ! grep -Eq "$MODNAME" $FILE; then
+#  ui_print "- Different version detected"
+#  ui_print "  Cleaning-up $MODID data..."
+#  cleanup
+#  ui_print " "
 fi
 
 # function
@@ -192,7 +208,7 @@ fi
 # function
 extract_lib() {
   for APPS in $APP; do
-    ui_print "- Extracting $APPS.apk libs..."
+    ui_print "- Extracting..."
     FILE=`find $MODPATH/system -type f -name $APPS.apk`
     DIR=`find $MODPATH/system -type d -name $APPS`/lib/$ARCH
     mkdir -p $DIR
@@ -227,14 +243,6 @@ else
   ui_print " "
 fi
 
-# code
-NAME=ro.miui.ui.version.code
-if getprop | grep -Eq "miui.code\]: \[0"; then
-  ui_print "- Removing $NAME..."
-  sed -i "s/resetprop $NAME/#resetprop $NAME/g" $FILE2
-  ui_print " "
-fi
-
 # function
 patch_file() {
   ui_print "- Patching"
@@ -243,7 +251,6 @@ patch_file() {
   ui_print "  to $MODPROP"
   ui_print "  Please wait..."
   sed -i "s/$PROP/$MODPROP/g" $FILE
-  sed -i "s/$PROP/$MODPROP/g" $FILE2
   ui_print " "
 }
 
@@ -254,11 +261,23 @@ if [ "$PROP" != 0 ]; then
   MODPROP=ro.product.miname
   patch_file
 fi
-FILE=`find $MODPATH/system -type f -name libnex*.so`
+FILE=`find $MODPATH -type f -name libnex*.so -o -name service.sh`
 if ! getprop | grep -Eq "miui.patch\]: \[0"; then
   PROP=ro.product.manufacturer
   MODPROP=ro.product.miui.gallery
   patch_file
+fi
+
+# media
+DIR=/media/audio/ui
+if [ ! -d /product$DIR ] && [ -d /system$DIR ]; then
+  ui_print "- Using /system/media instead of /product/media"
+  mv -f $MODPATH/system/product/media $MODPATH/system
+  rm -rf $MODPATH/system/product
+  ui_print " "
+elif [ ! -d /product$DIR ] && [ ! -d /system$DIR ]; then
+  ui_print "! /product/media & /system/media not found"
+  ui_print " "
 fi
 
 
