@@ -92,16 +92,12 @@ fi
 
 # cleaning
 ui_print "- Cleaning..."
-APP="`ls $MODPATH/system/priv-app` `ls $MODPATH/system/app`"
 PKG=com.miui.gallery
 if [ "$BOOTMODE" == true ]; then
   for PKGS in $PKG; do
     RES=`pm uninstall $PKGS`
   done
 fi
-for APPS in $APP; do
-  rm -f `find /data/dalvik-cache /data/resource-cache -type f -name *$APPS*.apk`
-done
 rm -rf /metadata/magisk/$MODID
 rm -rf /mnt/vendor/persist/magisk/$MODID
 rm -rf /persist/magisk/$MODID
@@ -220,8 +216,8 @@ extract_lib() {
 }
 
 # extract
-PROP=`getprop ro.product.cpu.abi`
-DES=lib/$PROP/*
+APP="`ls $MODPATH/system/priv-app` `ls $MODPATH/system/app`"
+DES=lib/`getprop ro.product.cpu.abi`/*
 extract_lib
 
 # features
