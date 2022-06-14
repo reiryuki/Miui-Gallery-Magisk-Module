@@ -7,6 +7,9 @@ else
   MAGISKTMP=`find /dev -mindepth 2 -maxdepth 2 -type d -name .magisk`
 fi
 
+# optionals
+OPTIONALS=/sdcard/optionals.prop
+
 # info
 MODVER=`grep_prop version $MODPATH/module.prop`
 MODVERCODE=`grep_prop versionCode $MODPATH/module.prop`
@@ -33,7 +36,7 @@ if [ "$BOOTMODE" != true ]; then
 fi
 FILE=$MODPATH/sepolicy.sh
 DES=$MODPATH/sepolicy.rule
-if [ -f $FILE ] && ! getprop | grep -Eq "sepolicy.sh\]: \[1"; then
+if [ -f $FILE ] && [ "`grep_prop sepolicy.sh $OPTIONALS`" != 1 ]; then
   mv -f $FILE $DES
   sed -i 's/magiskpolicy --live "//g' $DES
   sed -i 's/"//g' $DES
@@ -75,7 +78,7 @@ fi
 
 # global
 FILE=$MODPATH/service.sh
-if getprop | grep -Eq "miui.global\]: \[1"; then
+if [ "`grep_prop miui.global $OPTIONALS`" == 1 ]; then
   ui_print "- Global mode"
   sed -i 's/#g//g' $FILE
   ui_print " "
@@ -84,7 +87,7 @@ fi
 # code
 FILE=$MODPATH/service.sh
 NAME=ro.miui.ui.version.code
-if getprop | grep -Eq "miui.code\]: \[0"; then
+if [ "`grep_prop miui.code $OPTIONALS`" == 0 ]; then
   ui_print "- Removing $NAME..."
   sed -i "s/resetprop $NAME/#resetprop $NAME/g" $FILE
   ui_print " "
@@ -106,9 +109,8 @@ rm -rf /cache/magisk/$MODID
 ui_print " "
 
 # power save
-PROP=`getprop power.save`
 FILE=$MODPATH/system/etc/sysconfig/*
-if [ "$PROP" == 1 ]; then
+if [ "`grep_prop power.save $OPTIONALS`" == 1 ]; then
   ui_print "- $MODNAME will not be allowed in power save."
   ui_print "  It may save your battery but decreasing $MODNAME performance."
   for PKGS in $PKG; do
@@ -160,7 +162,8 @@ fi
 # cleanup
 DIR=/data/adb/modules/$MODID
 FILE=$DIR/module.prop
-if getprop | grep -Eq "miui.cleanup\]: \[1"; then
+if [ "`grep_prop data.cleanup $OPTIONALS`" == 1 ]; then
+  sed -i 's/^data.cleanup=1/data.cleanup=0/' $OPTIONALS
   ui_print "- Cleaning-up $MODID data..."
   cleanup
   ui_print " "
@@ -190,13 +193,9 @@ fi\' $MODPATH/post-fs-data.sh
 }
 
 # permissive
-if getprop | grep -Eq "permissive.mode\]: \[1"; then
+if [ "`grep_prop permissive.mode $OPTIONALS`" == 1 ]; then
   ui_print "- Using permissive method"
   rm -f $MODPATH/sepolicy.rule
-  permissive
-  ui_print " "
-elif getprop | grep -Eq "permissive.mode\]: \[2"; then
-  ui_print "- Using both permissive and SE policy patch"
   permissive
   ui_print " "
 fi
@@ -221,7 +220,7 @@ DES=lib/`getprop ro.product.cpu.abi`/*
 extract_lib
 
 # features
-PROP=`getprop miui.features`
+PROP=`grep_prop miui.features $OPTIONALS`
 FILE=$MODPATH/system.prop
 FILE2=$MODPATH/service.sh
 if [ "$PROP" == 0 ]; then
@@ -258,7 +257,7 @@ if [ "$PROP" != 0 ]; then
   patch_file
 fi
 FILE=`find $MODPATH -type f -name libnex*.so -o -name service.sh`
-if ! getprop | grep -Eq "miui.patch\]: \[0"; then
+if [ "`grep_prop miui.patch $OPTIONALS`" != 0 ]; then
   PROP=ro.product.manufacturer
   MODPROP=ro.product.miui.gallery
   patch_file
