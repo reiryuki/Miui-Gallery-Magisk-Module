@@ -3,6 +3,3 @@
     <hidden-api-whitelisted-app package="com.miui.gallery"/>
     <allow-in-power-save package="com.miui.gallery"/>
 </config>
-
-
-
