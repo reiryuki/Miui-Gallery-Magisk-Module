@@ -13,6 +13,8 @@ magiskpolicy --live "dontaudit { system_app priv_app platform_app untrusted_app_
 magiskpolicy --live "allow     { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untrusted_app } proc_stat file { open read }"
 magiskpolicy --live "dontaudit { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untrusted_app } { qemu_hw_prop vendor_camera_prop } file { read open getattr }"
 magiskpolicy --live "allow     { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untrusted_app } { qemu_hw_prop vendor_camera_prop } file { read open getattr }"
+magiskpolicy --live "dontaudit { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untrusted_app } vendor_default_prop file map"
+magiskpolicy --live "allow     { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untrusted_app } vendor_default_prop file map"
 magiskpolicy --live "dontaudit zygote device file { write open }"
 magiskpolicy --live "allow     zygote device file { write open }"
 magiskpolicy --live "dontaudit magisk system_lib_file file ioctl"

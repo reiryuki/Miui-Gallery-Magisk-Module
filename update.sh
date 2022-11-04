@@ -31,7 +31,7 @@ fi
 PROP=`getprop ro.product.cpu.abi`
 
 PKG=com.miui.gallery
-NAME=libmiuinative.so
+NAME="libmiuinative.so libmiuiblur.so"
 copy_library
 
 
