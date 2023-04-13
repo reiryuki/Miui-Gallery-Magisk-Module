@@ -1,5 +1,9 @@
 # Miui Gallery Magisk Module
 
+## DISCLAIMER
+- Miui apps are owned by Xiaomi™.
+- The MIT license specified here is for the Magisk Module, not for Miui apps.
+
 ## Descriptions
 - Miui Gallery app by Xiaomi Inc. ported and integrated as a Magisk Module for all supported and rooted devices with Magisk
 
@@ -19,6 +23,7 @@
 - Install Miui Core Magisk Module first: https://github.com/reiryuki/Miui-Core-Magisk-Module
 - Install this module global version https://www.pling.com/p/1537529/ or CN version https://www.pling.com/p/1572183/ via Magisk app or Recovery
 - Reboot
+- Go to app info of Miui Gallery and allow the network access to be able to download the online features
 
 ## Tested on
 - Android 10 CrDroid ROM
@@ -27,6 +32,7 @@
 - Android 12.1 Nusantara ROM
 - Android 13 Nusantara ROM
 - Android 13 AOSP ROM
+- Android 13 CrDroid ROM
 
 ## Optionals
 - https://t.me/androidryukimodsdiscussions/60861

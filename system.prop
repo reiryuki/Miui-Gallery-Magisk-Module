@@ -1,7 +1,2 @@
 # prevent bootloop
 ro.control_privapp_permissions=log
-
-# spoofing
-ro.product.name=cepheus
-
-

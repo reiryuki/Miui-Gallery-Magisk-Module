@@ -1,42 +1,58 @@
 # debug
-magiskpolicy --live "dontaudit system_server system_file file write"
-magiskpolicy --live "allow     system_server system_file file write"
+dontaudit system_server system_file file write
+allow     system_server system_file file write
+
+# context
+create { system_lib_file vendor_file vendor_configs_file }
+dontaudit { system_file system_lib_file vendor_file vendor_configs_file } labeledfs filesystem associate
+allow     { system_file system_lib_file vendor_file vendor_configs_file } labeledfs filesystem associate
+dontaudit init { system_file system_lib_file vendor_file vendor_configs_file } { dir file } relabelfrom
+allow     init { system_file system_lib_file vendor_file vendor_configs_file } { dir file } relabelfrom
 
 # file
-magiskpolicy --live "dontaudit { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untrusted_app } vendor_display_prop file { read open getattr map }"
-magiskpolicy --live "allow     { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untrusted_app } vendor_display_prop file { read open getattr map }"
-magiskpolicy --live "dontaudit { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untrusted_app } sysfs file { open getattr }"
-magiskpolicy --live "allow     { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untrusted_app } sysfs file { open getattr }"
-magiskpolicy --live "dontaudit { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untrusted_app } app_data_file file execute"
-magiskpolicy --live "allow     { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untrusted_app } app_data_file file execute"
-magiskpolicy --live "dontaudit { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untrusted_app } proc_stat file { open read }"
-magiskpolicy --live "allow     { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untrusted_app } proc_stat file { open read }"
-magiskpolicy --live "dontaudit { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untrusted_app } { qemu_hw_prop vendor_camera_prop } file { read open getattr }"
-magiskpolicy --live "allow     { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untrusted_app } { qemu_hw_prop vendor_camera_prop } file { read open getattr }"
-magiskpolicy --live "dontaudit { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untrusted_app } vendor_default_prop file map"
-magiskpolicy --live "allow     { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untrusted_app } vendor_default_prop file map"
-magiskpolicy --live "dontaudit zygote device file { write open }"
-magiskpolicy --live "allow     zygote device file { write open }"
-magiskpolicy --live "dontaudit magisk system_lib_file file ioctl"
-magiskpolicy --live "allow     magisk system_lib_file file ioctl"
-magiskpolicy --live "dontaudit crash_dump packagemanager_config_prop file { open getattr map }"
-magiskpolicy --live "allow     crash_dump packagemanager_config_prop file { open getattr map }"
-magiskpolicy --live "dontaudit crash_dump media_variant_prop file { open getattr }"
-magiskpolicy --live "allow     crash_dump media_variant_prop file { open getattr }"
+dontaudit { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untrusted_app } vendor_display_prop file { read open getattr map }
+allow     { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untrusted_app } vendor_display_prop file { read open getattr map }
+dontaudit { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untrusted_app } sysfs file { open getattr }
+allow     { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untrusted_app } sysfs file { open getattr }
+dontaudit { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untrusted_app } app_data_file file execute
+allow     { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untrusted_app } app_data_file file execute
+dontaudit { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untrusted_app } proc_stat file { open read }
+allow     { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untrusted_app } proc_stat file { open read }
+dontaudit { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untrusted_app } { qemu_hw_prop vendor_camera_prop } file { read open getattr }
+allow     { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untrusted_app } { qemu_hw_prop vendor_camera_prop } file { read open getattr }
+dontaudit { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untrusted_app } vendor_default_prop file map
+allow     { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untrusted_app } vendor_default_prop file map
+dontaudit zygote device file { write open }
+allow     zygote device file { write open }
+dontaudit magisk system_lib_file file ioctl
+allow     magisk system_lib_file file ioctl
+dontaudit crash_dump packagemanager_config_prop file { open getattr map }
+allow     crash_dump packagemanager_config_prop file { open getattr map }
+dontaudit crash_dump media_variant_prop file { open getattr }
+allow     crash_dump media_variant_prop file { open getattr }
 
 # dir
-magiskpolicy --live "dontaudit { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untrusted_app } blkio_dev dir search"
-magiskpolicy --live "allow     { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untrusted_app } blkio_dev dir search"
-magiskpolicy --live "dontaudit { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untrusted_app } app_data_file dir { getattr search }"
-magiskpolicy --live "allow     { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untrusted_app } app_data_file dir { getattr search }"
-magiskpolicy --live "dontaudit { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untrusted_app } system_data_file dir read"
-magiskpolicy --live "allow     { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untrusted_app } system_data_file dir read"
+dontaudit { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untrusted_app } blkio_dev dir search
+allow     { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untrusted_app } blkio_dev dir search
+dontaudit { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untrusted_app } app_data_file dir { getattr search }
+allow     { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untrusted_app } app_data_file dir { getattr search }
+dontaudit { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untrusted_app } system_data_file dir read
+allow     { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untrusted_app } system_data_file dir read
 
 # service_manager
-magiskpolicy --live "allow { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untrusted_app } default_android_service service_manager find"
+allow { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untrusted_app } default_android_service service_manager find
 
 # binder
-magiskpolicy --live "dontaudit { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untrusted_app } hal_memtrack_default binder call"
-magiskpolicy --live "allow     { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untrusted_app } hal_memtrack_default binder call"
+dontaudit { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untrusted_app } hal_memtrack_default binder call
+allow     { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untrusted_app } hal_memtrack_default binder call
+
+
+
+
+
+
+
+
+
 
 

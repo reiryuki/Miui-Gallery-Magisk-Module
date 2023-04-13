@@ -1,7 +1,5 @@
 # space
-if [ "$BOOTMODE" == true ]; then
-  ui_print " "
-fi
+ui_print " "
 
 # magisk
 if [ -d /sbin/.magisk ]; then
@@ -19,12 +17,23 @@ fi
 SYSTEM=`realpath $MIRROR/system`
 PRODUCT=`realpath $MIRROR/product`
 VENDOR=`realpath $MIRROR/vendor`
-SYSTEM_EXT=`realpath $MIRROR/system/system_ext`
-ODM=`realpath /odm`
-MY_PRODUCT=`realpath /my_product`
+SYSTEM_EXT=`realpath $MIRROR/system_ext`
+if [ -d $MIRROR/odm ]; then
+  ODM=`realpath $MIRROR/odm`
+else
+  ODM=`realpath /odm`
+fi
+if [ -d $MIRROR/my_product ]; then
+  MY_PRODUCT=`realpath $MIRROR/my_product`
+else
+  MY_PRODUCT=`realpath /my_product`
+fi
 
 # optionals
 OPTIONALS=/sdcard/optionals.prop
+if [ ! -f $OPTIONALS ]; then
+  touch $OPTIONALS
+fi
 
 # info
 MODVER=`grep_prop version $MODPATH/module.prop`
@@ -53,13 +62,12 @@ if [ "$BOOTMODE" != true ]; then
   mount -o rw -t auto /dev/block/bootdevice/by-name/metadata /metadata
 fi
 
-# sepolicy.rule
-FILE=$MODPATH/sepolicy.sh
-DES=$MODPATH/sepolicy.rule
-if [ -f $FILE ] && [ "`grep_prop sepolicy.sh $OPTIONALS`" != 1 ]; then
+# sepolicy
+FILE=$MODPATH/sepolicy.rule
+DES=$MODPATH/sepolicy.pfsd
+if [ "`grep_prop sepolicy.sh $OPTIONALS`" == 1 ]\
+&& [ -f $FILE ]; then
   mv -f $FILE $DES
-  sed -i 's/magiskpolicy --live "//g' $DES
-  sed -i 's/"//g' $DES
 fi
 
 # sdk
@@ -115,10 +123,10 @@ fi
 
 # cleaning
 ui_print "- Cleaning..."
-PKG=com.miui.gallery
+PKG=`cat $MODPATH/package.txt`
 if [ "$BOOTMODE" == true ]; then
   for PKGS in $PKG; do
-    RES=`pm uninstall $PKGS`
+    RES=`pm uninstall $PKGS 2>/dev/null`
   done
 fi
 rm -rf /metadata/magisk/$MODID
@@ -145,7 +153,7 @@ conflict() {
 for NAMES in $NAME; do
   DIR=/data/adb/modules_update/$NAMES
   if [ -f $DIR/uninstall.sh ]; then
-    . $DIR/uninstall.sh
+    sh $DIR/uninstall.sh
   fi
   rm -rf $DIR
   DIR=/data/adb/modules/$NAMES
@@ -153,7 +161,7 @@ for NAMES in $NAME; do
   touch $DIR/remove
   FILE=/data/adb/modules/$NAMES/uninstall.sh
   if [ -f $FILE ]; then
-    . $FILE
+    sh $FILE
     rm -f $FILE
   fi
   rm -rf /metadata/magisk/$NAMES
@@ -171,11 +179,11 @@ conflict
 # function
 cleanup() {
 if [ -f $DIR/uninstall.sh ]; then
-  . $DIR/uninstall.sh
+  sh $DIR/uninstall.sh
 fi
 DIR=/data/adb/modules_update/$MODID
 if [ -f $DIR/uninstall.sh ]; then
-  . $DIR/uninstall.sh
+  sh $DIR/uninstall.sh
 fi
 }
 
@@ -237,39 +245,44 @@ fi
 
 # function
 extract_lib() {
-  for APPS in $APP; do
+for APPS in $APP; do
+  FILE=`find $MODPATH/system -type f -name $APPS.apk`
+  if [ -f `dirname $FILE`/extract ]; then
+    rm -f `dirname $FILE`/extract
     ui_print "- Extracting..."
-    FILE=`find $MODPATH/system -type f -name $APPS.apk`
-    DIR=`find $MODPATH/system -type d -name $APPS`/lib/$ARCH
+    DIR=`dirname $FILE`/lib/$ARCH
     mkdir -p $DIR
     rm -rf $TMPDIR/*
     unzip -d $TMPDIR -o $FILE $DES
     cp -f $TMPDIR/$DES $DIR
     ui_print " "
-  done
+  fi
+done
+}
+hide_oat() {
+for APPS in $APP; do
+  mkdir -p `find $MODPATH/system -type d -name $APPS`/oat
+  touch `find $MODPATH/system -type d -name $APPS`/oat/.replace
+done
 }
 
 # extract
 APP="`ls $MODPATH/system/priv-app` `ls $MODPATH/system/app`"
 DES=lib/`getprop ro.product.cpu.abi`/*
 extract_lib
+# hide
+hide_oat
 
 # features
 PROP=`grep_prop miui.features $OPTIONALS`
-FILE=$MODPATH/system.prop
-FILE2=$MODPATH/service.sh
+FILE=$MODPATH/service.sh
 if [ "$PROP" == 0 ]; then
-  ui_print "- Removing ro.product.name changes..."
-  sed -i 's/ro.product.name=cepheus//g' $FILE
-  sed -i 's/resetprop ro.product.miname cepheus//g' $FILE2
+  ui_print "- Removing ro.gallery.device changes..."
+  sed -i 's/resetprop ro.gallery.device cepheus//g' $FILE
   ui_print " "
 elif [ "$PROP" ] && [ "$PROP" != 1 ]; then
-  ui_print "- Your ro.product.name will be changed to $PROP"
+  ui_print "- ro.gallery.device will be changed to $PROP"
   sed -i "s/cepheus/$PROP/g" $FILE
-  sed -i "s/cepheus/$PROP/g" $FILE2
-  ui_print " "
-else
-  ui_print "- Your ro.product.name will be changed to cepheus"
   ui_print " "
 fi
 
@@ -286,29 +299,15 @@ patch_file() {
 
 # patch
 FILE=`find $MODPATH/system -type f -name libnexeditorsdk.so`
-if [ "$PROP" != 0 ]; then
-  PROP=ro.product.device
-  MODPROP=ro.product.miname
-  patch_file
-fi
-FILE=`find $MODPATH -type f -name libnex*.so -o -name service.sh`
-if [ "`grep_prop miui.patch $OPTIONALS`" != 0 ]; then
-  PROP=ro.product.manufacturer
-  MODPROP=ro.product.miui.gallery
-  patch_file
-fi
+PROP=ro.product.device
+MODPROP=ro.gallery.device
+patch_file
+FILE=`find $MODPATH -type f -name libnex*.so`
+PROP=ro.product.manufacturer
+MODPROP=ro.product.miui.gallery
+patch_file
 
-# media
-DIR=/media/audio/ui
-if [ ! -d $PRODUCT$DIR ] && [ -d $SYSTEM$DIR ]; then
-  ui_print "- Using /system/media instead of /product/media"
-  mv -f $MODPATH/system/product/media $MODPATH/system
-  rm -rf $MODPATH/system/product
-  ui_print " "
-elif [ ! -d $PRODUCT$DIR ] && [ ! -d $SYSTEM$DIR ]; then
-  ui_print "! /product/media & /system/media not found"
-  ui_print " "
-fi
+
 
 
 
