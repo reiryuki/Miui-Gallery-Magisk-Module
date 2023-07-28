@@ -1,39 +1,16 @@
 # space
 ui_print " "
 
-# magisk
-if [ -d /sbin/.magisk ]; then
-  MAGISKTMP=/sbin/.magisk
-else
-  MAGISKTMP=`realpath /dev/*/.magisk`
+# log
+if [ "$BOOTMODE" != true ]; then
+  FILE=/sdcard/$MODID\_recovery.log
+  ui_print "- Log will be saved at $FILE"
+  exec 2>$FILE
+  ui_print " "
 fi
 
-# path
-if [ "$BOOTMODE" == true ]; then
-  MIRROR=$MAGISKTMP/mirror
-else
-  MIRROR=
-fi
-SYSTEM=`realpath $MIRROR/system`
-PRODUCT=`realpath $MIRROR/product`
-VENDOR=`realpath $MIRROR/vendor`
-SYSTEM_EXT=`realpath $MIRROR/system_ext`
-if [ -d $MIRROR/odm ]; then
-  ODM=`realpath $MIRROR/odm`
-else
-  ODM=`realpath /odm`
-fi
-if [ -d $MIRROR/my_product ]; then
-  MY_PRODUCT=`realpath $MIRROR/my_product`
-else
-  MY_PRODUCT=`realpath /my_product`
-fi
-
-# optionals
-OPTIONALS=/sdcard/optionals.prop
-if [ ! -f $OPTIONALS ]; then
-  touch $OPTIONALS
-fi
+# run
+. $MODPATH/function.sh
 
 # info
 MODVER=`grep_prop version $MODPATH/module.prop`
@@ -41,34 +18,16 @@ MODVERCODE=`grep_prop versionCode $MODPATH/module.prop`
 ui_print " ID=$MODID"
 ui_print " Version=$MODVER"
 ui_print " VersionCode=$MODVERCODE"
-ui_print " MagiskVersion=$MAGISK_VER"
-ui_print " MagiskVersionCode=$MAGISK_VER_CODE"
-ui_print " "
-
-# bit
-if [ "$IS64BIT" != true ]; then
-  ui_print "- 32 bit"
-  rm -rf `find $MODPATH/system -type d -name *64`
+if [ "$KSU" == true ]; then
+  ui_print " KSUVersion=$KSU_VER"
+  ui_print " KSUVersionCode=$KSU_VER_CODE"
+  ui_print " KSUKernelVersionCode=$KSU_KERNEL_VER_CODE"
+  sed -i 's|#k||g' $MODPATH/post-fs-data.sh
 else
-  ui_print "- 64 bit"
+  ui_print " MagiskVersion=$MAGISK_VER"
+  ui_print " MagiskVersionCode=$MAGISK_VER_CODE"
 fi
 ui_print " "
-
-# mount
-if [ "$BOOTMODE" != true ]; then
-  mount -o rw -t auto /dev/block/bootdevice/by-name/cust /vendor
-  mount -o rw -t auto /dev/block/bootdevice/by-name/vendor /vendor
-  mount -o rw -t auto /dev/block/bootdevice/by-name/persist /persist
-  mount -o rw -t auto /dev/block/bootdevice/by-name/metadata /metadata
-fi
-
-# sepolicy
-FILE=$MODPATH/sepolicy.rule
-DES=$MODPATH/sepolicy.pfsd
-if [ "`grep_prop sepolicy.sh $OPTIONALS`" == 1 ]\
-&& [ -f $FILE ]; then
-  mv -f $FILE $DES
-fi
 
 # sdk
 NUM=21
@@ -81,6 +40,15 @@ else
   ui_print "- SDK $API"
   ui_print " "
 fi
+
+# bit
+if [ "$IS64BIT" != true ]; then
+  ui_print "- 64 bit"
+else
+  ui_print "- 32 bit"
+  rm -rf `find $MODPATH -type d -name *64*`
+fi
+ui_print " "
 
 # opengles
 PROP=`getprop ro.opengles.version`
@@ -95,7 +63,8 @@ else
 fi
 
 # miuicore
-if [ ! -d /data/adb/modules_update/MiuiCore ] && [ ! -d /data/adb/modules/MiuiCore ]; then
+if [ ! -d /data/adb/modules_update/MiuiCore ]\
+&& [ ! -d /data/adb/modules/MiuiCore ]; then
   ui_print "! Miui Core Magisk Module is not installed."
   ui_print "  Please read github installation guide!"
   abort
@@ -104,11 +73,25 @@ else
   rm -f /data/adb/modules/MiuiCore/disable
 fi
 
+# optionals
+OPTIONALS=/sdcard/optionals.prop
+if [ ! -f $OPTIONALS ]; then
+  touch $OPTIONALS
+fi
+
+# sepolicy
+FILE=$MODPATH/sepolicy.rule
+DES=$MODPATH/sepolicy.pfsd
+if [ "`grep_prop sepolicy.sh $OPTIONALS`" == 1 ]\
+&& [ -f $FILE ]; then
+  mv -f $FILE $DES
+fi
+
 # global
 FILE=$MODPATH/service.sh
 if [ "`grep_prop miui.global $OPTIONALS`" == 1 ]; then
   ui_print "- Global mode"
-  sed -i 's/#g//g' $FILE
+  sed -i 's|#g||g' $FILE
   ui_print " "
 fi
 
@@ -117,63 +100,59 @@ FILE=$MODPATH/service.sh
 NAME=ro.miui.ui.version.code
 if [ "`grep_prop miui.code $OPTIONALS`" == 0 ]; then
   ui_print "- Removing $NAME..."
-  sed -i "s/resetprop $NAME/#resetprop $NAME/g" $FILE
+  sed -i "s|resetprop $NAME|#resetprop $NAME|g" $FILE
   ui_print " "
 fi
 
 # cleaning
 ui_print "- Cleaning..."
-PKG=`cat $MODPATH/package.txt`
+PKGS=`cat $MODPATH/package.txt`
 if [ "$BOOTMODE" == true ]; then
-  for PKGS in $PKG; do
-    RES=`pm uninstall $PKGS 2>/dev/null`
+  for PKG in $PKGS; do
+    RES=`pm uninstall $PKG 2>/dev/null`
   done
 fi
-rm -rf /metadata/magisk/$MODID
-rm -rf /mnt/vendor/persist/magisk/$MODID
-rm -rf /persist/magisk/$MODID
-rm -rf /data/unencrypted/magisk/$MODID
-rm -rf /cache/magisk/$MODID
+remove_sepolicy_rule
 ui_print " "
-
 # power save
 FILE=$MODPATH/system/etc/sysconfig/*
 if [ "`grep_prop power.save $OPTIONALS`" == 1 ]; then
   ui_print "- $MODNAME will not be allowed in power save."
   ui_print "  It may save your battery but decreasing $MODNAME performance."
-  for PKGS in $PKG; do
-    sed -i "s/<allow-in-power-save package=\"$PKGS\"\/>//g" $FILE
-    sed -i "s/<allow-in-power-save package=\"$PKGS\" \/>//g" $FILE
+  for PKG in $PKGS; do
+    sed -i "s|<allow-in-power-save package=\"$PKG\"/>||g" $FILE
+    sed -i "s|<allow-in-power-save package=\"$PKG\" />||g" $FILE
   done
   ui_print " "
 fi
 
 # function
 conflict() {
-for NAMES in $NAME; do
-  DIR=/data/adb/modules_update/$NAMES
+for NAME in $NAMES; do
+  DIR=/data/adb/modules_update/$NAME
   if [ -f $DIR/uninstall.sh ]; then
     sh $DIR/uninstall.sh
   fi
   rm -rf $DIR
-  DIR=/data/adb/modules/$NAMES
+  DIR=/data/adb/modules/$NAME
   rm -f $DIR/update
   touch $DIR/remove
-  FILE=/data/adb/modules/$NAMES/uninstall.sh
+  FILE=/data/adb/modules/$NAME/uninstall.sh
   if [ -f $FILE ]; then
     sh $FILE
     rm -f $FILE
   fi
-  rm -rf /metadata/magisk/$NAMES
-  rm -rf /mnt/vendor/persist/magisk/$NAMES
-  rm -rf /persist/magisk/$NAMES
-  rm -rf /data/unencrypted/magisk/$NAMES
-  rm -rf /cache/magisk/$NAMES
+  rm -rf /metadata/magisk/$NAME
+  rm -rf /mnt/vendor/persist/magisk/$NAME
+  rm -rf /persist/magisk/$NAME
+  rm -rf /data/unencrypted/magisk/$NAME
+  rm -rf /cache/magisk/$NAME
+  rm -rf /cust/magisk/$NAME
 done
 }
 
 # conflict
-NAME=MIUIGallery
+NAMES=MIUIGallery
 conflict
 
 # function
@@ -191,11 +170,11 @@ fi
 DIR=/data/adb/modules/$MODID
 FILE=$DIR/module.prop
 if [ "`grep_prop data.cleanup $OPTIONALS`" == 1 ]; then
-  sed -i 's/^data.cleanup=1/data.cleanup=0/' $OPTIONALS
+  sed -i 's|^data.cleanup=1|data.cleanup=0|g' $OPTIONALS
   ui_print "- Cleaning-up $MODID data..."
   cleanup
   ui_print " "
-#elif [ -d $DIR ] && ! grep -Eq "$MODNAME" $FILE; then
+#elif [ -d $DIR ] && ! grep -q "$MODNAME" $FILE; then
 #  ui_print "- Different version detected"
 #  ui_print "  Cleaning-up $MODID data..."
 #  cleanup
@@ -204,29 +183,28 @@ fi
 
 # function
 permissive_2() {
-sed -i '1i\
-SELINUX=`getenforce`\
-if [ "$SELINUX" == Enforcing ]; then\
-  magiskpolicy --live "permissive *"\
-fi\' $MODPATH/post-fs-data.sh
+sed -i 's|#2||g' $MODPATH/post-fs-data.sh
 }
 permissive() {
-SELINUX=`getenforce`
-if [ "$SELINUX" == Enforcing ]; then
-  setenforce 0
-  SELINUX=`getenforce`
-  if [ "$SELINUX" == Enforcing ]; then
+FILE=/sys/fs/selinux/enforce
+SELINUX=`cat $FILE`
+if [ "$SELINUX" == 1 ]; then
+  if ! setenforce 0; then
+    echo 0 > $FILE
+  fi
+  SELINUX=`cat $FILE`
+  if [ "$SELINUX" == 1 ]; then
     ui_print "  Your device can't be turned to Permissive state."
     ui_print "  Using Magisk Permissive mode instead."
     permissive_2
   else
-    setenforce 1
-    sed -i '1i\
-SELINUX=`getenforce`\
-if [ "$SELINUX" == Enforcing ]; then\
-  setenforce 0\
-fi\' $MODPATH/post-fs-data.sh
+    if ! setenforce 1; then
+      echo 1 > $FILE
+    fi
+    sed -i 's|#1||g' $MODPATH/post-fs-data.sh
   fi
+else
+  sed -i 's|#1||g' $MODPATH/post-fs-data.sh
 fi
 }
 
@@ -245,14 +223,15 @@ fi
 
 # function
 extract_lib() {
-for APPS in $APP; do
-  FILE=`find $MODPATH/system -type f -name $APPS.apk`
+for APP in $APPS; do
+  FILE=`find $MODPATH/system -type f -name $APP.apk`
   if [ -f `dirname $FILE`/extract ]; then
     rm -f `dirname $FILE`/extract
     ui_print "- Extracting..."
-    DIR=`dirname $FILE`/lib/$ARCH
+    DIR=`dirname $FILE`/lib/"$ARCH"
     mkdir -p $DIR
     rm -rf $TMPDIR/*
+    DES=lib/"$ABI"/*
     unzip -d $TMPDIR -o $FILE $DES
     cp -f $TMPDIR/$DES $DIR
     ui_print " "
@@ -260,15 +239,14 @@ for APPS in $APP; do
 done
 }
 hide_oat() {
-for APPS in $APP; do
-  mkdir -p `find $MODPATH/system -type d -name $APPS`/oat
-  touch `find $MODPATH/system -type d -name $APPS`/oat/.replace
+for APP in $APPS; do
+  REPLACE="$REPLACE
+  `find $MODPATH/system -type d -name $APP | sed "s|$MODPATH||g"`/oat"
 done
 }
 
 # extract
-APP="`ls $MODPATH/system/priv-app` `ls $MODPATH/system/app`"
-DES=lib/`getprop ro.product.cpu.abi`/*
+APPS="`ls $MODPATH/system/priv-app` `ls $MODPATH/system/app`"
 extract_lib
 # hide
 hide_oat
@@ -278,11 +256,11 @@ PROP=`grep_prop miui.features $OPTIONALS`
 FILE=$MODPATH/service.sh
 if [ "$PROP" == 0 ]; then
   ui_print "- Removing ro.gallery.device changes..."
-  sed -i 's/resetprop ro.gallery.device cepheus//g' $FILE
+  sed -i 's|resetprop ro.gallery.device cepheus||g' $FILE
   ui_print " "
 elif [ "$PROP" ] && [ "$PROP" != 1 ]; then
   ui_print "- ro.gallery.device will be changed to $PROP"
-  sed -i "s/cepheus/$PROP/g" $FILE
+  sed -i "s|cepheus|$PROP|g" $FILE
   ui_print " "
 fi
 
@@ -293,7 +271,7 @@ patch_file() {
   ui_print "  changing $PROP"
   ui_print "  to $MODPROP"
   ui_print "  Please wait..."
-  sed -i "s/$PROP/$MODPROP/g" $FILE
+  sed -i "s|$PROP|$MODPROP|g" $FILE
   ui_print " "
 }
 

@@ -2,13 +2,13 @@
 
 ## DISCLAIMER
 - Miui apps are owned by Xiaomi™.
-- The MIT license specified here is for the Magisk Module, not for Miui apps.
+- The MIT license specified here is for the Magisk Module only, not for Miui apps.
 
 ## Descriptions
 - Miui Gallery app by Xiaomi Inc. ported and integrated as a Magisk Module for all supported and rooted devices with Magisk
 
 ## Sources
-- apkmirror.com com.miui.gallery Xiaomi Inc.
+- https://apkmirror.com com.miui.gallery by Xiaomi Inc.
 
 ## Screenshots
 - https://t.me/androidryukimods/180
@@ -17,12 +17,14 @@
 - NOT in Miui ROM
 - Android 5 and up
 - OpenGLES 2.0 and up
-- Magisk installed
+- Magisk or KernelSU installed
 
 ## Installation Guide & Download Link
 - Install Miui Core Magisk Module first: https://github.com/reiryuki/Miui-Core-Magisk-Module
-- Install this module global version https://www.pling.com/p/1537529/ or CN version https://www.pling.com/p/1572183/ via Magisk app or Recovery
+- Install this module global version https://www.pling.com/p/1537529/ or CN version https://www.pling.com/p/1572183/ via Magisk app or KernelSU app or Recovery if Magisk installed
 - Reboot
+- If you are using KernelSU, you need to allow superuser list manually all package name listed in package.txt (and your home launcher app also) (enable show system apps) and reboot after
+- If you are using SUList, you need to allow list manually your home launcher app (enable show system apps) and reboot after
 - Go to app info of Miui Gallery and allow the network access to be able to download the online features
 
 ## Tested on
@@ -30,9 +32,7 @@
 - Android 11 DotOS ROM
 - Android 12 AncientOS ROM
 - Android 12.1 Nusantara ROM
-- Android 13 Nusantara ROM
-- Android 13 AOSP ROM
-- Android 13 CrDroid ROM
+- Android 13 Nusantara ROM, AOSP ROM, & CrDroid ROM
 
 ## Optionals
 - https://t.me/androidryukimodsdiscussions/60861
