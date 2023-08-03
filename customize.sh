@@ -42,7 +42,7 @@ else
 fi
 
 # bit
-if [ "$IS64BIT" != true ]; then
+if [ "$IS64BIT" == true ]; then
   ui_print "- 64 bit"
 else
   ui_print "- 32 bit"
