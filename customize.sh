@@ -9,6 +9,19 @@ if [ "$BOOTMODE" != true ]; then
   ui_print " "
 fi
 
+# optionals
+OPTIONALS=/sdcard/optionals.prop
+if [ ! -f $OPTIONALS ]; then
+  touch $OPTIONALS
+fi
+
+# debug
+if [ "`grep_prop debug.log $OPTIONALS`" == 1 ]; then
+  ui_print "- The install log will contain detailed information"
+  set -x
+  ui_print " "
+fi
+
 # run
 . $MODPATH/function.sh
 
@@ -50,18 +63,6 @@ else
 fi
 ui_print " "
 
-# opengles
-PROP=`getprop ro.opengles.version`
-NUM=131072
-if [ "$PROP" -lt $NUM ]; then
-  ui_print "! Unsupported OpenGLES $PROP. This module is only for"
-  ui_print "  OpenGLES $NUM and up."
-  abort
-else
-  ui_print "- OpenGLES $PROP"
-  ui_print " "
-fi
-
 # miuicore
 if [ ! -d /data/adb/modules_update/MiuiCore ]\
 && [ ! -d /data/adb/modules/MiuiCore ]; then
@@ -71,12 +72,6 @@ if [ ! -d /data/adb/modules_update/MiuiCore ]\
 else
   rm -f /data/adb/modules/MiuiCore/remove
   rm -f /data/adb/modules/MiuiCore/disable
-fi
-
-# optionals
-OPTIONALS=/sdcard/optionals.prop
-if [ ! -f $OPTIONALS ]; then
-  touch $OPTIONALS
 fi
 
 # sepolicy
@@ -169,12 +164,14 @@ fi
 # cleanup
 DIR=/data/adb/modules/$MODID
 FILE=$DIR/module.prop
+PREVMODNAME=`grep_prop name $FILE`
 if [ "`grep_prop data.cleanup $OPTIONALS`" == 1 ]; then
   sed -i 's|^data.cleanup=1|data.cleanup=0|g' $OPTIONALS
   ui_print "- Cleaning-up $MODID data..."
   cleanup
   ui_print " "
-#elif [ -d $DIR ] && ! grep -q "$MODNAME" $FILE; then
+#elif [ -d $DIR ]\
+#&& [ "$PREVMODNAME" != "$MODNAME" ]; then
 #  ui_print "- Different version detected"
 #  ui_print "  Cleaning-up $MODID data..."
 #  cleanup

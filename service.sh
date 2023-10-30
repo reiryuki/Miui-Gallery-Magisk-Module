@@ -1,9 +1,11 @@
 MODPATH=${0%/*}
-API=`getprop ro.build.version.sdk`
 
 # log
 exec 2>$MODPATH/debug.log
 set -x
+
+# var
+API=`getprop ro.build.version.sdk`
 
 # property
 resetprop ro.gallery.device cepheus
@@ -30,7 +32,6 @@ if [ "$API" -ge 33 ]; then
   pm grant $PKG android.permission.READ_MEDIA_AUDIO
   pm grant $PKG android.permission.READ_MEDIA_VIDEO
   pm grant $PKG android.permission.READ_MEDIA_IMAGES
-  pm grant $PKG android.permission.POST_NOTIFICATIONS
   appops set $PKG ACCESS_RESTRICTED_SETTINGS allow
 fi
 appops set $PKG LEGACY_STORAGE allow
@@ -68,7 +69,7 @@ grant_permission
 
 # grant
 PKG=cn.wps.moffice_eng.xiaomi.lite
-if pm list packages | grep $PKG; then
+if appops get $PKG > /dev/null 2>&1; then
   grant_permission
 fi
 
