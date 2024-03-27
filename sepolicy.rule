@@ -22,6 +22,7 @@ allow crash_dump media_variant_prop file { open getattr }
 allow { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untrusted_app } blkio_dev dir search
 allow { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untrusted_app } app_data_file dir { getattr search }
 allow { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untrusted_app } system_data_file dir read
+allow { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untrusted_app } privapp_data_file dir map
 
 # service_manager
 allow { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untrusted_app } default_android_service service_manager find

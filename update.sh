@@ -1,5 +1,5 @@
 copy_library() {
-if echo "$PROP" | grep 64; then
+if echo "$ABI" | grep 64; then
   DES="`find /data/app -type d -name *$PKG*`/lib/*64"
   if echo $DES | grep $PKG; then
     for NAMES in $NAME; do
@@ -30,7 +30,7 @@ else
 fi
 }
 
-PROP=`getprop ro.product.cpu.abi`
+ABI=`getprop ro.product.cpu.abi`
 PKG=com.miui.gallery
 NAME="libnativehelper.so libmiuinative.so libmiuiblur.so
       libimage_arcsoft_4plus.so libstlport_shared.so"
