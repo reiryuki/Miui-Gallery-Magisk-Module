@@ -22,18 +22,11 @@
 ## Installation Guide & Download Link
 - Install Miui Core Magisk Module first: https://github.com/reiryuki/Miui-Core-Magisk-Module
 - Install this module global version https://www.pling.com/p/1537529/ or CN version https://www.pling.com/p/1572183/ via Magisk app or KernelSU app or Recovery if Magisk installed
+- If you are using KernelSU, you need to disable Unmount Modules by Default in KernelSU app settings
 - Reboot
 - If you are using KernelSU, you need to allow superuser list manually all package name listed in package.txt (and your home launcher app also) (enable show system apps) and reboot afterwards
 - If you are using SUList, you need to allow list manually your home launcher app (enable show system apps) and reboot afterwards
 - Go to app info of Miui Gallery and allow the network access to be able to download the online features
-
-## Tested on
-- Android 10 CrDroid ROM
-- Android 11 DotOS ROM
-- Android 12 AncientOS ROM
-- Android 12.1 Nusantara ROM
-- Android 13 Nusantara ROM, AOSP ROM, & CrDroid ROM
-- Android 14 LinegaeOS ROM
 
 ## Optionals
 - https://t.me/androidryukimodsdiscussions/54012

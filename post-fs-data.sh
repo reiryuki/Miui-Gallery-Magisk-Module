@@ -45,26 +45,6 @@ chmod 0755 $MODPATH/*/libmagiskpolicy.so
 FILE=$MODPATH/sepolicy.pfsd
 sepolicy_sh
 
-# list
-PKGS="`cat $MODPATH/package.txt`
-       com.miui.gallery:photo_editor
-       com.miui.gallery:widgetProvider
-       com.miui.gallery:remote
-       com.miui.gallery:pushservice"
-for PKG in $PKGS; do
-  magisk --denylist rm $PKG 2>/dev/null
-  magisk --sulist add $PKG 2>/dev/null
-done
-if magisk magiskhide sulist; then
-  for PKG in $PKGS; do
-    magisk magiskhide add $PKG
-  done
-else
-  for PKG in $PKGS; do
-    magisk magiskhide rm $PKG
-  done
-fi
-
 # dependency
 #rm -f /data/adb/modules/MiuiCore/remove
 #rm -f /data/adb/modules/MiuiCore/disable
