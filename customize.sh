@@ -65,15 +65,6 @@ else
   ui_print " "
 fi
 
-# bit
-if [ "$IS64BIT" == true ]; then
-  ui_print "- 64 bit"
-else
-  ui_print "- 32 bit"
-  rm -rf `find $MODPATH -type d -name *64*`
-fi
-ui_print " "
-
 # miuicore
 if [ ! -d /data/adb/modules/MiuiCore ]; then
   ui_print "! Miui Core Magisk Module is not installed."
@@ -168,7 +159,7 @@ if [ "`grep_prop data.cleanup $OPTIONALS`" == 1 ]; then
   ui_print " "
 #elif [ -d $DIR ]\
 #&& [ "$PREVMODNAME" != "$MODNAME" ]; then
-#  ui_print "- Different version detected"
+#  ui_print "- Different module name is detected"
 #  ui_print "  Cleaning-up $MODID data..."
 #  cleanup
 #  ui_print " "
@@ -219,12 +210,11 @@ extract_lib() {
 for APP in $APPS; do
   FILE=`find $MODPATH/system -type f -name $APP.apk`
   if [ -f `dirname $FILE`/extract ]; then
-    rm -f `dirname $FILE`/extract
     ui_print "- Extracting..."
-    DIR=`dirname $FILE`/lib/"$ARCH"
+    DIR=`dirname $FILE`/lib/"$ARCHLIB"
     mkdir -p $DIR
     rm -rf $TMPDIR/*
-    DES=lib/"$ABI"/*
+    DES=lib/"$ABILIB"/*
     unzip -d $TMPDIR -o $FILE $DES
     cp -f $TMPDIR/$DES $DIR
     ui_print " "
@@ -239,8 +229,29 @@ done
 }
 
 # extract
-APPS="`ls $MODPATH/system/priv-app` `ls $MODPATH/system/app`"
+APPS="`ls $MODPATH/system/priv-app`
+      `ls $MODPATH/system/app`"
+ARCHLIB=arm64
+ABILIB=arm64-v8a
 extract_lib
+ARCHLIB=arm
+if echo "$ABILIST" | grep -q armeabi-v7a; then
+  ABILIB=armeabi-v7a
+  extract_lib
+elif echo "$ABILIST" | grep -q armeabi; then
+  ABILIB=armeabi
+  extract_lib
+else
+  ABILIB=armeabi-v7a
+  extract_lib
+fi
+ARCHLIB=x64
+ABILIB=x86_64
+extract_lib
+ARCHLIB=x86
+ABILIB=x86
+extract_lib
+rm -f `find $MODPATH/system -type f -name extract`
 # hide
 hide_oat
 

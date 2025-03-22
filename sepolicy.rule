@@ -13,6 +13,7 @@ allow { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untru
 allow { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untrusted_app } proc_stat file { open read }
 allow { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untrusted_app } { qemu_hw_prop vendor_camera_prop } file { read open getattr }
 allow { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untrusted_app } { vendor_default_prop qemu_hw_prop } file map
+allow { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untrusted_app } userdebug_or_eng_prop file read
 allow zygote device file { write open }
 allow magisk system_lib_file file ioctl
 allow crash_dump packagemanager_config_prop file { open getattr map }
@@ -29,14 +30,5 @@ allow { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untru
 
 # binder
 allow { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untrusted_app } hal_memtrack_default binder call
-
-
-
-
-
-
-
-
-
 
 

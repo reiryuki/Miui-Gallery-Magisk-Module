@@ -5,18 +5,18 @@
 - The MIT license specified here is for the Magisk Module only, not for Miui apps.
 
 ## Descriptions
-- Miui Gallery app by Xiaomi Inc. ported and integrated as a Magisk Module for all supported and rooted devices with Magisk
+- Gallery app by Xiaomi Inc. ported and integrated as a Magisk Module for all supported and rooted devices with Magisk
 
 ## Sources
 - https://apkmirror.com com.miui.gallery by Xiaomi Inc.
+- libmagiskpolicy.so: Kitsune Mask R6687BB53
 
 ## Screenshots
 - https://t.me/androidryukimods/180
 
 ## Requirements
 - NOT in Miui ROM
-- Android 5 and up
-- OpenGLES 2.0 and up
+- Android 5 (SDK 21) and up
 - Magisk or KernelSU installed
 
 ## Installation Guide & Download Link
@@ -26,18 +26,18 @@
 - Reboot
 - If you are using KernelSU, you need to allow superuser list manually all package name listed in package.txt (and your home launcher app also) (enable show system apps) and reboot afterwards
 - If you are using SUList, you need to allow list manually your home launcher app (enable show system apps) and reboot afterwards
-- Go to app info of Miui Gallery and allow the network access to be able to download the online features
+- Go to app info of Gallery app and allow the network access to be able to download the online features
 
 ## Optionals
-- https://t.me/androidryukimodsdiscussions/54012
-- Global: https://t.me/androidryukimodsdiscussions/60861
+- https://t.me/ryukinotes/42
+- Global: https://t.me/ryukinotes/35
 
 ## Troubleshootings
-- https://t.me/androidryukimodsdiscussions/64467
-- Global: https://t.me/androidryukimodsdiscussions/29836
+- https://t.me/ryukinotes/19
+- Global: https://t.me/ryukinotes/34
 
 ## Support & Bug Report
-- https://t.me/androidryukimodsdiscussions/2618
+- https://t.me/ryukinotes/54
 - If you don't do above, issues will be closed immediately
 
 ## Credits and Contributors
@@ -46,6 +46,6 @@
 - ANXCamera VIP Edition Team
 
 ## Sponsors
-- https://t.me/androidryukimodsdiscussions/2619
+- https://t.me/ryukinotes/25
 
 
