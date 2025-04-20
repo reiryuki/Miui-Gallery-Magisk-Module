@@ -332,39 +332,42 @@ rm -f `find $MODPATH/system -type f -name extract`
 # hide
 hide_oat
 
+# function
+change_name() {
+if grep -q $NAME $FILE; then
+  ui_print "- Changing $NAME to $NAME2 at"
+  ui_print "$FILE"
+  ui_print "  Please wait..."
+  sed -i "s|$NAME|$NAME2|g" $FILE
+  ui_print " "
+fi
+}
+
 # features
 PROP=`grep_prop miui.features $OPTIONALS`
 FILE=$MODPATH/service.sh
+if [ "$PROP" != 0 ]; then
+  FILE=`find $MODPATH/system -type f -name libnexeditorsdk.so`
+  NAME=ro.product.device
+  NAME2=ro.gallery.device
+  change_name
+  FILE=`find $MODPATH -type f -name libnex*.so`
+  NAME=ro.product.manufacturer
+  NAME2=ro.gallery.manufacturer
+  change_name
+fi
 if [ "$PROP" == 0 ]; then
-  ui_print "- Removing ro.gallery.device changes..."
-  sed -i 's|resetprop ro.gallery.device cepheus||g' $FILE
+  ui_print "- Removing ro.gallery.device and ro.gallery.manufacturer"
+  ui_print "  changes..."
+  sed -i 's|resetprop -n ro.gallery.device cepheus||g' $FILE
+  sed -i 's|resetprop -n ro.gallery.manufacturer Xiaomi||g' $FILE
   ui_print " "
 elif [ "$PROP" ] && [ "$PROP" != 1 ]; then
-  ui_print "- ro.gallery.device will be changed to $PROP"
+  ui_print "- ro.gallery.device will set to $PROP"
   sed -i "s|cepheus|$PROP|g" $FILE
   ui_print " "
 fi
 
-# function
-patch_file() {
-  ui_print "- Patching"
-  ui_print "$FILE"
-  ui_print "  changing $PROP"
-  ui_print "  to $MODPROP"
-  ui_print "  Please wait..."
-  sed -i "s|$PROP|$MODPROP|g" $FILE
-  ui_print " "
-}
-
-# patch
-FILE=`find $MODPATH/system -type f -name libnexeditorsdk.so`
-PROP=ro.product.device
-MODPROP=ro.gallery.device
-patch_file
-FILE=`find $MODPATH -type f -name libnex*.so`
-PROP=ro.product.manufacturer
-MODPROP=ro.product.miui.gallery
-patch_file
 
 
 
