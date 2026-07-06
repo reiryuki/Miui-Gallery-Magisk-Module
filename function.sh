@@ -14,7 +14,8 @@ rm -rf /metadata/magisk/"$MODID"\
  /persist/magisk/"$MODID"\
  /data/unencrypted/magisk/"$MODID"\
  /cache/magisk/"$MODID"\
- /cust/magisk/"$MODID"
+ /cust/magisk/"$MODID"\
+ /klogdump/magisk/"$MODID"
 }
 
 

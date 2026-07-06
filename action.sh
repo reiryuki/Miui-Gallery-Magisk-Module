@@ -1,7 +1,7 @@
 MODPATH=${0%/*}
 
 # info
-echo "- Apps caches from this module will be re-cleaned"
+echo "- App caches from this module will be re-cleaned"
 echo "  at the next boot."
 echo " "
 

@@ -65,7 +65,7 @@ if [ "$API" -ge 34 ]; then
   appops set $PKG READ_MEDIA_VISUAL_USER_SELECTED allow
 fi
 PKGOPS=`appops get $PKG`
-UID=`dumpsys package $PKG 2>/dev/null | grep -m 1 Id= | sed -e 's|    userId=||g' -e 's|    appId=||g'`
+UID=`grep "^$PKG " /data/system/packages.list | awk '{print $2}'`
 if [ "$UID" ] && [ "$UID" -gt 9999 ]; then
   appops set --uid "$UID" LEGACY_STORAGE allow
   appops set --uid "$UID" READ_EXTERNAL_STORAGE allow
@@ -82,7 +82,7 @@ fi
 
 # grant
 PKG=com.miui.gallery
-if appops get $PKG > /dev/null 2>&1; then
+if appops get $PKG >/dev/null 2>&1; then
   pm grant --all-permissions $PKG
   appops set $PKG SYSTEM_ALERT_WINDOW allow
   appops_set
@@ -90,7 +90,7 @@ fi
 
 # grant
 PKG=cn.wps.moffice_eng.xiaomi.lite
-if appops get $PKG > /dev/null 2>&1; then
+if appops get $PKG >/dev/null 2>&1; then
   pm grant --all-permissions $PKG
   appops_set
 fi
